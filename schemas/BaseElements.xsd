@@ -230,6 +230,12 @@
 			<xs:element minOccurs="0" name="SerialNumber" type="HPXMLString"/>
 			<xs:element name="ModelYear" type="Year" minOccurs="0"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" name="ThirdPartyCertification" type="ApplianceThirdPartyCertifications"/>
+			<xs:element minOccurs="0" name="IsSharedAppliance" type="HPXMLBoolean">
+				<xs:annotation>
+					<xs:documentation>Does the appliance serve multiple building/dwelling units?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="NumberofUnitsServed" type="HPXMLInteger"/>
 		</xs:sequence>
 		<xs:attribute name="dataSource" type="DataSource"/>
 	</xs:complexType>
@@ -268,6 +274,10 @@
 			<xs:extension base="ApplianceTypeSummaryInfo">
 
 				<xs:sequence>
+					<xs:choice minOccurs="0">
+						<xs:element name="AttachedToWaterHeatingSystem" type="LocalReference"/>
+						<xs:element name="AttachedToHotWaterDistribution" type="LocalReference"/>
+					</xs:choice>
 					<xs:element name="Type" type="ClothesWasherType" minOccurs="0"/>
 					<xs:element minOccurs="0" name="Location" type="LaundryMachineLocation"/>
 					<xs:element name="ModifiedEnergyFactor" type="HPXMLDouble" minOccurs="0">
@@ -333,6 +343,10 @@
 		<xs:complexContent>
 			<xs:extension base="ApplianceTypeSummaryInfo">
 				<xs:sequence>
+					<xs:choice minOccurs="0">
+						<xs:element name="AttachedToWaterHeatingSystem" type="LocalReference"/>
+						<xs:element name="AttachedToHotWaterDistribution" type="LocalReference"/>
+					</xs:choice>
 					<xs:element minOccurs="0" name="Type" type="DishwasherType"/>
 					<xs:element minOccurs="0" name="Fuel" type="FuelType"/>
 					<xs:element name="HeatDryDefaultOff" type="HPXMLBoolean" minOccurs="0"/>
@@ -1272,6 +1286,16 @@
 												<xs:element minOccurs="0" name="UsedForWholeBuildingVentilation" type="HPXMLBoolean"/>
 												<xs:element minOccurs="0" name="UsedForSeasonalCoolingLoadReduction" type="HPXMLBoolean"/>
 												<xs:element minOccurs="0" name="UsedForGarageVentilation" type="HPXMLBoolean"/>
+												<xs:element minOccurs="0" name="IsSharedSystem" type="HPXMLBoolean">
+													<xs:annotation>
+														<xs:documentation>Does the system serve multiple building/dwelling units?</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element minOccurs="0" name="FractionRecirculation" type="Fraction">
+													<xs:annotation>
+														<xs:documentation>The fraction of supply air that is from recirculation.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
 												<xs:element minOccurs="0" name="RatedNoise" type="HPXMLDouble">
 													<xs:annotation>
 														<xs:documentation>[sones] from manufacturer's info</xs:documentation>
@@ -1327,6 +1351,9 @@
 															to.</xs:documentation>
 													</xs:annotation>
 												</xs:element>
+												<xs:element minOccurs="0" name="PreconditioningHeatingSystem" type="HeatingSystemInfoType"/>
+												<xs:element minOccurs="0" name="PreconditioningCoolingSystem" type="CoolingSystemInfoType"/>
+												<xs:element minOccurs="0" name="PreconditioningHeatPump" type="HeatPumpInfoType"/>
 												<xs:element minOccurs="0" ref="extension"/>
 											</xs:sequence>
 											<xs:attribute name="dataSource" type="DataSource"/>
@@ -1366,6 +1393,11 @@
 							<xs:complexType>
 								<xs:sequence>
 									<xs:group ref="SystemInfo"/>
+									<xs:element minOccurs="0" name="HotWaterDistributionSystem" type="LocalReference" maxOccurs="1">
+										<xs:annotation>
+											<xs:documentation>The hot water distribution system served by this water heating system.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
 									<xs:element minOccurs="0" ref="ConnectedDevice"/>
 									<xs:element minOccurs="0" ref="AttachedToZone"/>
 									<xs:element minOccurs="0" name="AttachedToCAZ" type="LocalReference"/>
@@ -1378,6 +1410,12 @@
 									<xs:element name="ModelNumber" type="Model" minOccurs="0"/>
 									<xs:element minOccurs="0" name="AHRINumber" type="HPXMLString"/>
 									<xs:element minOccurs="0" name="SerialNumber" type="HPXMLString"/>
+									<xs:element minOccurs="0" name="IsSharedSystem" type="HPXMLBoolean">
+										<xs:annotation>
+											<xs:documentation>Does the system serve multiple building/dwelling units or a shared laundry/equipment room?</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element minOccurs="0" name="NumberofUnitsServed" type="HPXMLInteger"/>
 									<xs:element minOccurs="0" name="PerformanceAdjustment" type="Fraction"/>
 									<xs:element minOccurs="0" name="ThirdPartyCertification" type="DHWThirdPartyCertification" maxOccurs="unbounded"/>
 									<xs:element name="TankVolume" type="Volume" minOccurs="0">
@@ -1524,7 +1562,7 @@
 									<xs:group ref="SystemInfo"/>
 									<xs:element minOccurs="0" name="AttachedToWaterHeatingSystem" type="LocalReference">
 										<xs:annotation>
-											<xs:documentation>The water heating system that this distribution system serves.</xs:documentation>
+											<xs:documentation>DEPRECATED. This will be removed in v4.0. Use WaterHeatingSystem/HotWaterDistributionSystem instead.</xs:documentation>
 										</xs:annotation>
 									</xs:element>
 									<xs:element minOccurs="0" name="SystemType">
@@ -1701,7 +1739,15 @@
 											<xs:documentation>[gal]</xs:documentation>
 										</xs:annotation>
 									</xs:element>
-									<xs:element minOccurs="0" name="ConnectedTo" type="LocalReference"/>
+									<xs:choice minOccurs="0">
+										<xs:element name="AttachedToWaterHeatingSystem" type="LocalReference"/>
+										<xs:element name="AttachedToHotWaterDistribution" type="LocalReference"/>
+									</xs:choice>
+									<xs:element minOccurs="0" name="ConnectedTo" type="LocalReference">
+										<xs:annotation>
+											<xs:documentation>DEPRECATED. This will be removed in v4.0. Use AttachedToWaterHeatingSystem or AttachedToHotWaterDistribution instead.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
 									<xs:element minOccurs="0" name="SolarFraction" type="SolarFraction">
 										<xs:annotation>
 											<xs:documentation>The Solar Fraction is the portion of the total conventional hot water heating load (delivered energy and tank standby losses). The higher
@@ -1733,6 +1779,12 @@
 								<xs:sequence>
 									<xs:group ref="SystemInfo"/>
 									<xs:element minOccurs="0" ref="ConnectedDevice"/>
+									<xs:element minOccurs="0" name="IsSharedSystem" type="HPXMLBoolean">
+										<xs:annotation>
+											<xs:documentation>Does the system serve multiple building/dwelling units?</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element minOccurs="0" name="NumberofUnitsServed" type="HPXMLInteger"/>
 									<xs:element minOccurs="0" name="Location" type="PVSystemLocation"/>
 									<xs:element minOccurs="0" name="Ownership" type="PVSystemOwnership"/>
 									<xs:element minOccurs="0" name="ModuleType" type="PVModuleType"> </xs:element>
@@ -3042,6 +3094,17 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element minOccurs="0" name="HVACMaintenance" type="HVACMaintenance"/>
+			<xs:element minOccurs="0" name="IsSharedSystem" type="HPXMLBoolean">
+				<xs:annotation>
+					<xs:documentation>Does the system serve multiple building/dwelling units?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="IsVentilationPreconditioningSystem" type="HPXMLBoolean">
+				<xs:annotation>
+					<xs:documentation>Does the system only provide preconditioning for mechanical ventilation?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="NumberofUnitsServed" type="HPXMLInteger"/>
 		</xs:sequence>
 		<xs:attribute name="dataSource" type="DataSource"/>
 	</xs:complexType>
@@ -3161,6 +3224,14 @@
 					<xs:attribute name="dataSource" type="DataSource"/>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="PackagedTerminalAirConditionerHeating">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="extension"/>
+					</xs:sequence>
+					<xs:attribute name="dataSource" type="DataSource"/>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="SolarThermal">
 				<xs:complexType>
 					<xs:sequence>
@@ -3257,7 +3328,7 @@
 				<xs:sequence>
 					<xs:element name="CoolingSystemType" type="CoolingSystemType" minOccurs="0"/>
 					<xs:element minOccurs="0" name="CoolingSystemFuel" type="FuelType"/>
-					<xs:element minOccurs="0" name="CoolingCapacity" type="HPXMLDouble">
+					<xs:element minOccurs="0" name="CoolingCapacity" type="Capacity">
 						<xs:annotation>
 							<xs:documentation>[Btuh]</xs:documentation>
 						</xs:annotation>

@@ -1747,6 +1747,9 @@
 			<xs:enumeration value="mini-split"/>
 			<xs:enumeration value="room air conditioner"/>
 			<xs:enumeration value="evaporative cooler"/>
+			<xs:enumeration value="chiller"/>
+			<xs:enumeration value="cooling tower"/>
+			<xs:enumeration value="packaged terminal air conditioner"/>
 			<xs:enumeration value="other"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -1837,6 +1840,9 @@
 			<xs:enumeration value="mini-split"/>
 			<xs:enumeration value="ground-to-air"/>
 			<xs:enumeration value="ground-to-water"/>
+			<xs:enumeration value="packaged terminal heat pump"/>
+			<xs:enumeration value="water-loop-to-air"/>
+			<xs:enumeration value="variable refrigerant flow"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="HeatPumpType">
@@ -2722,6 +2728,7 @@
 			<xs:enumeration value="baseboard"/>
 			<xs:enumeration value="radiant floor"/>
 			<xs:enumeration value="radiant ceiling"/>
+			<xs:enumeration value="water loop"/>
 			<xs:enumeration value="other"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -2737,6 +2744,7 @@
 			<xs:enumeration value="regular velocity"/>
 			<xs:enumeration value="high velocity"/>
 			<xs:enumeration value="gravity"/>
+			<xs:enumeration value="fan coil"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="AirDistributionType">
