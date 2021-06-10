@@ -605,8 +605,13 @@
 									<xs:element minOccurs="1" name="AtticType" type="AtticType"/>
 									<xs:element minOccurs="0" name="VentilationRate" type="VentilationType"/>
 									<xs:element minOccurs="0" name="AttachedToRoof" type="LocalReference" maxOccurs="unbounded"/>
+									<xs:element minOccurs="0" name="AttachedToCeiling" type="LocalReference" maxOccurs="unbounded"/>
 									<xs:element minOccurs="0" name="AttachedToWall" type="LocalReference" maxOccurs="unbounded"/>
-									<xs:element minOccurs="0" name="AttachedToFrameFloor" type="LocalReference" maxOccurs="unbounded"/>
+									<xs:element minOccurs="0" name="AttachedToFrameFloor" type="LocalReference" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>DEPRECATION WARNING: AttachedToFrameFloor will be deprecated in the future. Use AttachedToCeiling instead.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
 									<xs:element name="AnnualEnergyUse" minOccurs="0">
 										<xs:complexType>
 											<xs:sequence>
@@ -688,6 +693,7 @@
 									</xs:element>
 									<xs:element minOccurs="0" name="AttachedToRoof" type="LocalReference" maxOccurs="unbounded"/>
 									<xs:element minOccurs="0" name="AttachedToWall" type="LocalReference" maxOccurs="unbounded"/>
+									<xs:element minOccurs="0" name="AttachedToCeiling" type="LocalReference" maxOccurs="unbounded"/>
 									<xs:element minOccurs="0" name="AttachedToFoundationWall" type="LocalReference" maxOccurs="unbounded"/>
 									<xs:element minOccurs="0" name="AttachedToFrameFloor" type="LocalReference" maxOccurs="unbounded"/>
 									<xs:element minOccurs="0" name="AttachedToSlab" type="LocalReference" maxOccurs="unbounded"/>
@@ -920,14 +926,43 @@
 					<xs:attribute name="dataSource" type="DataSource"/>
 				</xs:complexType>
 			</xs:element>
+			<xs:element minOccurs="0" name="Ceilings">
+				<xs:annotation>
+					<xs:documentation>Use Ceilings for horizontal surfaces above living space (e.g., sufaces between living space and attic).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Ceiling" maxOccurs="unbounded" minOccurs="1">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:group ref="SystemInfo"/>
+									<xs:element minOccurs="0" ref="AttachedToSpace"/>
+									<xs:element name="ExteriorAdjacentTo" type="AdjacentTo" minOccurs="0"> </xs:element>
+									<xs:element minOccurs="0" name="InteriorAdjacentTo" type="AdjacentTo"/>
+									<xs:element minOccurs="0" name="CeilingJoists" type="StudProperties"/>
+									<xs:element minOccurs="0" name="CeilingTrusses" type="StudProperties"/>
+									<xs:element minOccurs="0" name="Area" type="SurfaceArea">
+										<xs:annotation>
+											<xs:documentation>[sq.ft.]</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element minOccurs="0" maxOccurs="1" name="Insulation" type="InsulationInfo"> </xs:element>
+									<xs:element minOccurs="0" ref="extension"/>
+								</xs:sequence>
+								<xs:attribute name="dataSource" type="DataSource"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="dataSource" type="DataSource"/>
+				</xs:complexType>
+			</xs:element>
 			<xs:element minOccurs="0" name="FrameFloors">
+				<xs:annotation>
+					<xs:documentation>Use FrameFloors for horizontal surfaces below living space (e.g., sufaces between living space and crawlspace/basement/ambient foundations).</xs:documentation>
+				</xs:annotation>
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="FrameFloor" maxOccurs="unbounded" minOccurs="1">
-							<xs:annotation>
-								<xs:documentation>Use the FrameFloor element for all floors/ceilings. For example, living space ceilings/attic floors, floors above foundations, floors under bonus
-									rooms, cantilevered floors, etc.</xs:documentation>
-							</xs:annotation>
 							<xs:complexType>
 								<xs:sequence>
 									<xs:group ref="SystemInfo"/>
